@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">BeatKhanaTestApp</string>
     <string name="action_home">home</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_recent">Recent</string>
+    <string name="action_saved">Saved</string>
+    <string name="action_search">Search</string>
+    <string name="action_profile">Profile</string>
 </resources>

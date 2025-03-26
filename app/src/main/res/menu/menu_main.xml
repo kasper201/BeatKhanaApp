@@ -10,18 +10,18 @@
     <item
         android:id="@+id/action_recent"
         android:icon="@drawable/recently_viewed"
-        android:title="Recent"/>
+        android:title="@string/action_recent"/>
     <item
         android:id="@+id/action_saved_players"
         android:icon="@drawable/saved_players"
-        android:title="Saved"/>
+        android:title="@string/action_saved"/>
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/search_icon"
-        android:title="Search"
+        android:title="@string/action_search"
         app:actionViewClass="android.widget.SearchView" />
     <item
         android:id="@+id/action_player_profile"
         android:icon="@drawable/profile"
-        android:title="Profile" />
+        android:title="@string/action_profile" />
 </menu>
