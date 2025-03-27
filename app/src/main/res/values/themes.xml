@@ -4,6 +4,8 @@
         <!-- Customize your light theme here. -->
          <item name="colorPrimary">#4C5B70</item>
          <item name="colorPrimaryDark">#24293C</item>
+         <item name="textColorPrimary">@color/white</item>
+         <item name="mainFont">@font/jersey_25_latin_400_normal</item>
     </style>
 
     <style name="Theme.BeatKhanaTestApp" parent="Base.Theme.BeatKhanaTestApp" />

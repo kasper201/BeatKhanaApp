@@ -7,4 +7,7 @@
     <string name="action_saved">Saved</string>
     <string name="action_search">Search</string>
     <string name="action_profile">Profile</string>
+    <string name="rank_example">#13900</string>
+    <string name="acc_example">98.28%</string>
+    <string name="pp_example">19,239.23pp</string>
 </resources>
