@@ -2,21 +2,34 @@
 package com.kasper201.beatkhanatest;
 
 public class PlayerInfo {
+    private String username;
     private String ssPP;
-    private String blRank;
+
+    private String ssRank;
     private String ssRankChange;
     private String blRankChange;
     private String blPP;
-    private String accuracy;
+    private String blRank;
+    private String accuracy; // fetched from BeatLeader
 
     // Constructor
-    public PlayerInfo(String ssPP, String blRank, String ssRankChange, String blRankChange, String blPP, String accuracy) {
+    public PlayerInfo(String username ,String ssPP, String ssRank, String blRank, String ssRankChange, String blRankChange, String blPP, String accuracy) {
+        this.username = username;
         this.ssPP = ssPP;
+        this.ssRank = ssRank;
+        this.blPP = blPP;
         this.blRank = blRank;
         this.ssRankChange = ssRankChange;
         this.blRankChange = blRankChange;
-        this.blPP = blPP;
         this.accuracy = accuracy;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     // Getters and Setters
@@ -26,6 +39,14 @@ public class PlayerInfo {
 
     public void setSsPP(String ssPP) {
         this.ssPP = ssPP;
+    }
+
+    public String getSsRank() {
+        return ssRank;
+    }
+
+    public void setSsRank(String ssRank) {
+        this.ssRank = ssRank;
     }
 
     public String getBlRank() {

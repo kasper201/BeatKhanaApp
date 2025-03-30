@@ -6,7 +6,7 @@
     android:layout_height="144dp"
     android:layout_gravity="center"
     android:id="@+id/infoPlayerFragment"
-    android:background="@color/OverlayBG"
+    android:background="@drawable/rounded_corners"
     android:layout_margin="16dp"
     tools:context=".PlayerInfoFragment">
 
@@ -26,19 +26,21 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:fontFamily="?attr/mainFont"
             android:gravity="start|top"
+            android:maxWidth="205dp"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="?attr/textColorPrimary"
             android:textFontWeight="550"
             android:textSize="32sp"
-            android:maxEms="16"
+            app:layout_constraintBottom_toBottomOf="@id/countryFlag"
             app:layout_constraintStart_toEndOf="@id/countryFlag"
             app:layout_constraintTop_toTopOf="@id/countryFlag"
-            app:layout_constraintBottom_toBottomOf="@id/countryFlag"
             tools:text="@tools:sample/full_names" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,9 +48,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/playerprofile"
+            android:layout_marginStart="12dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView">
+            app:layout_constraintTop_toBottomOf="@+id/username">
 
             <ImageView
                 android:id="@+id/ssicon"
@@ -82,6 +84,7 @@
                 android:text="+139"
                 android:textFontWeight="550"
                 android:textSize="16sp"
+                android:textColor="@color/GainGreen"
                 app:layout_constraintBottom_toBottomOf="@id/ssRank"
                 app:layout_constraintStart_toEndOf="@id/ssRank"
                 app:layout_constraintTop_toTopOf="@id/ssRank" />
@@ -132,6 +135,7 @@
                 android:text="-139"
                 android:textFontWeight="550"
                 android:textSize="16sp"
+                android:textColor="@color/LossRed"
                 app:layout_constraintBottom_toBottomOf="@id/blRank"
                 app:layout_constraintStart_toEndOf="@id/blRank"
                 app:layout_constraintTop_toTopOf="@id/blRank" />

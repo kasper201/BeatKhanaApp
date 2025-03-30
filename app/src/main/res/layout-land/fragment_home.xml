@@ -9,6 +9,7 @@
     android:backgroundTint="?attr/colorPrimary"
     android:backgroundTintMode="add">
 
+<!--    TODO: Fix corner rounding -->
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"

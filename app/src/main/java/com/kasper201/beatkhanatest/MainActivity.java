@@ -6,6 +6,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,75 +14,54 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.kasper201.beatkhanatest.databinding.ActivityMainBinding;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OverviewFragment.OnItemSelectedListener {
+
+    ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new HomeFragment()).commit(); // Load the HomeFragment by default
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer_layout), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        // Use if-else statements as a workaround for the switch statement not functioning properly
+        if(binding.bottomNavigationView == null) {
+            throw new IllegalStateException("bottomNavigationView must not be null");
+        }
+
+        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.action_home) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new HomeFragment()).commit();
+                return true;
+            } else if (itemId == R.id.action_recent) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new RecentFragment()).commit();
+                return true;
+            } else if (itemId == R.id.action_search) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new SearchFragment()).commit();
+                return true;
+            } else if (itemId == R.id.action_saved) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new UserFragment()).commit();
+                return true;
+            } else if (itemId == R.id.action_user_profile) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new UserFragment()).commit();
+                return true;
+            } else {
+                return false;
+            }
         });
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu); // Inflate the menu
-
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        if (searchItem != null) {
-            SearchView searchView = (SearchView) searchItem.getActionView();
-            if (searchView != null) {
-                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        searchView.clearFocus();
-                        // Do something with the query
-                        return true;
-                    }
-
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-                        // Do something with the query
-                        return true;
-                    }
-                });
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_home) { // using if-else statements as a workaround for the switch statement
-            // Do something for the "Home" action
-            return true;
-        } else if (id == R.id.action_recent) {
-            // Do something for the "Recent" action
-            return true;
-        } else if (id == R.id.action_saved_players) {
-            // Do something for the "Saved Players" action
-            return true;
-        } else if (id == R.id.action_search) {
-            // Do something for the "Search" action
-            return true;
-        } else if (id == R.id.action_player_profile) {
-            // Do something for the "Profile" action
-            return true;
-        } else {
-            // The user's action isn't recognized.
-            // Invoke the superclass to handle it.
-            return super.onOptionsItemSelected(item);
-        }
+    public void onItemSelected(String itemName) {
+        Toast.makeText(this, "Selected: " + itemName, Toast.LENGTH_SHORT).show();
     }
 }
