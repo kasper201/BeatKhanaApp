@@ -11,9 +11,11 @@ public class PlayerInfo {
     private String blPP;
     private String blRank;
     private String accuracy; // fetched from BeatLeader
+    private String country; // fetched from BeatLeader
+    private String avatar; // fetched from BeatLeader
 
     // Constructor
-    public PlayerInfo(String username ,String ssPP, String ssRank, String blRank, String ssRankChange, String blRankChange, String blPP, String accuracy) {
+    public PlayerInfo(String username ,String ssPP, String ssRank, String blRank, String ssRankChange, String blRankChange, String blPP, String accuracy, String country, String avatar) {
         this.username = username;
         this.ssPP = ssPP;
         this.ssRank = ssRank;
@@ -22,6 +24,7 @@ public class PlayerInfo {
         this.ssRankChange = ssRankChange;
         this.blRankChange = blRankChange;
         this.accuracy = accuracy;
+        this.country = country;
     }
 
     public String getUsername() {
@@ -55,6 +58,10 @@ public class PlayerInfo {
 
     public void setBlRank(String blRank) {
         this.blRank = blRank;
+    }
+
+    public int getBlRankAsInt() {
+        return Integer.parseInt(blRank.replace("#", ""));
     }
 
     public String getSsRankChange() {
