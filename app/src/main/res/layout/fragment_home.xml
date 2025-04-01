@@ -7,7 +7,17 @@
     tools:context=".HomeFragment"
     android:background="@color/black"
     android:backgroundTint="?attr/colorPrimary"
-    android:backgroundTintMode="add">
+    android:backgroundTintMode="add"
+    app:shapeAppearanceOverlay="@style/RoundedCorners12">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#24293C"
+        android:elevation="4dp"
+        android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <ListView
         android:id="@+id/listView"
@@ -16,6 +26,7 @@
         app:shapeAppearanceOverlay="@style/RoundedCorners12"
         tools:listitem="@layout/fragment_player_info"
         android:padding="16dp"
+        android:layout_marginBottom="-16dp"
         android:divider="@android:color/transparent"
         android:dividerHeight="16dp"
         android:scrollbarStyle="outsideOverlay">

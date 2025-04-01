@@ -2,6 +2,7 @@
 package com.kasper201.beatkhanatest;
 
 public class PlayerInfo {
+    private String id;
     private String username;
     private String ssPP;
 
@@ -15,7 +16,8 @@ public class PlayerInfo {
     private String avatar; // fetched from BeatLeader
 
     // Constructor
-    public PlayerInfo(String username ,String ssPP, String ssRank, String blRank, String ssRankChange, String blRankChange, String blPP, String accuracy, String country, String avatar) {
+    public PlayerInfo(String id, String username ,String ssPP, String ssRank, String blRank, String ssRankChange, String blRankChange, String blPP, String accuracy, String country, String avatar) {
+        this.id = id;
         this.username = username;
         this.ssPP = ssPP;
         this.ssRank = ssRank;
@@ -115,5 +117,13 @@ public class PlayerInfo {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getID() {
+        return id;
+    }
+
+    public void setID(String id) {
+        this.id = id;
     }
 }

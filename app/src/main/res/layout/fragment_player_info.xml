@@ -46,7 +46,7 @@
             tools:text="@tools:sample/full_names" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
+            android:id="@+id/playerRankData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -56,8 +56,8 @@
 
             <ImageView
                 android:id="@+id/ssicon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_margin="2dp"
                 android:src="@drawable/logo_scoresaber"
                 app:layout_constraintBottom_toBottomOf="@id/ssRank"
@@ -107,8 +107,8 @@
 
             <ImageView
                 android:id="@+id/blIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_margin="2dp"
                 android:src="@drawable/logo_beatleader"
                 app:layout_constraintBottom_toBottomOf="@id/blRank"

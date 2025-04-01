@@ -1,17 +1,338 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PlayerDetailFragment"
     android:background="@color/black"
     android:backgroundTint="?attr/colorPrimary"
-    android:backgroundTintMode="add">
+    android:backgroundTintMode="add"
+    tools:context=".PlayerDetailFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/playerInfo"
+                android:layout_width="380dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/rounded_corners">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/playerprofile"
+                    android:layout_width="82dp"
+                    android:layout_height="82dp"
+                    android:layout_margin="12dp"
+                    android:layout_marginBottom="797dp"
+                    android:elevation="8dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/profile"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/RoundedCorners4" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/textWrap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="19dp"
+                    android:layout_marginBottom="-11dp"
+                    app:layout_constraintBottom_toBottomOf="@id/playerprofile"
+                    app:layout_constraintStart_toEndOf="@+id/playerprofile">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/playerRankData"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="-4dp"
+                        app:layout_constraintBottom_toTopOf="@id/username"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <ImageView
+                            android:id="@+id/countryFlag"
+                            android:layout_width="36dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/rounded_corners"
+                            android:elevation="8dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/country_flag"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/ssicon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_margin="4dp"
+                            android:src="@drawable/logo_scoresaber"
+                            app:layout_constraintBottom_toBottomOf="@id/ssRank"
+                            app:layout_constraintStart_toEndOf="@id/countryFlag"
+                            app:layout_constraintTop_toTopOf="@id/ssRank" />
+
+                        <TextView
+                            android:id="@+id/ssRank"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:fontFamily="?attr/mainFont"
+                            android:text="@string/rank_example"
+                            android:textColor="?attr/textColorPrimary"
+                            android:textFontWeight="550"
+                            android:textSize="20sp"
+                            app:layout_constraintStart_toEndOf="@id/ssicon"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/ssRankChange"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="?attr/mainFont"
+                            android:text="+139"
+                            android:textColor="@color/GainGreen"
+                            android:textFontWeight="550"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toBottomOf="@id/ssRank"
+                            app:layout_constraintStart_toEndOf="@id/ssRank"
+                            app:layout_constraintTop_toTopOf="@id/ssRank" />
+
+                        <TextView
+                            android:id="@+id/ssPP"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:fontFamily="?attr/mainFont"
+                            android:text="@string/pp_example"
+                            android:textColor="?attr/textColorPrimary"
+                            android:textFontWeight="550"
+                            android:textSize="20sp"
+                            app:layout_constraintBottom_toBottomOf="@id/ssRank"
+                            app:layout_constraintStart_toEndOf="@id/ssRankChange"
+                            app:layout_constraintTop_toTopOf="@id/ssRank" />
+
+                        <ImageView
+                            android:id="@+id/blIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_margin="4dp"
+                            android:src="@drawable/logo_beatleader"
+                            app:layout_constraintBottom_toBottomOf="@id/blRank"
+                            app:layout_constraintStart_toEndOf="@id/countryFlag"
+                            app:layout_constraintTop_toTopOf="@id/blRank" />
+
+                        <TextView
+                            android:id="@+id/blRank"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:fontFamily="?attr/mainFont"
+                            android:text="@string/rank_example"
+                            android:textColor="?attr/textColorPrimary"
+                            android:textFontWeight="550"
+                            android:textSize="20sp"
+                            app:layout_constraintStart_toEndOf="@id/blIcon"
+                            app:layout_constraintTop_toBottomOf="@id/ssRank" />
+
+                        <TextView
+                            android:id="@+id/blRankChange"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="?attr/mainFont"
+                            android:text="-139"
+                            android:textColor="@color/LossRed"
+                            android:textFontWeight="550"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toBottomOf="@id/blRank"
+                            app:layout_constraintStart_toEndOf="@id/blRank"
+                            app:layout_constraintTop_toTopOf="@id/blRank" />
+
+                        <TextView
+                            android:id="@+id/blPP"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:fontFamily="?attr/mainFont"
+                            android:text="@string/pp_example"
+                            android:textColor="?attr/textColorPrimary"
+                            android:textFontWeight="550"
+                            android:textSize="20sp"
+                            app:layout_constraintBottom_toBottomOf="@id/blRank"
+                            app:layout_constraintStart_toEndOf="@id/blRankChange"
+                            app:layout_constraintTop_toTopOf="@id/blRank" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:id="@+id/username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="?attr/mainFont"
+                        android:gravity="start|top"
+                        android:maxWidth="260dp"
+                        android:maxLines="1"
+                        android:textColor="?attr/textColorPrimary"
+                        android:textFontWeight="550"
+                        android:textSize="48sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="@tools:sample/full_names" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ssBadges"
+                android:layout_width="380dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_corners"
+                android:padding="5dp">
+
+                <ImageView
+                    android:id="@+id/ssicon2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="2dp"
+                    android:src="@drawable/logo_scoresaber"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/titleSsBadges"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:elevation="8dp"
+                    android:fontFamily="?attr/mainFont"
+                    android:text="ScoreSaber Badges"
+                    android:textColor="?attr/textColorPrimary"
+                    android:textFontWeight="550"
+                    android:textSize="30sp"
+                    app:layout_constraintBottom_toBottomOf="@id/ssicon2"
+                    app:layout_constraintStart_toEndOf="@+id/ssicon2" />
+
+                <!--                TODO: add badges (Grid layout?) -->
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/blBadges"
+                android:layout_width="380dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_corners"
+                android:padding="5dp">
+
+                <ImageView
+                    android:id="@+id/blIcon2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/logo_beatleader"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/titleBlBadges"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:elevation="8dp"
+                    android:fontFamily="?attr/mainFont"
+                    android:text="BeatLeader Badges"
+                    android:textColor="?attr/textColorPrimary"
+                    android:textFontWeight="550"
+                    android:textSize="30sp"
+                    app:layout_constraintBottom_toBottomOf="@id/blIcon2"
+                    app:layout_constraintStart_toEndOf="@id/blIcon2" />
+
+                <!--                TODO: add badges (Grid layout?) -->
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/playerRankHistory"
+                android:layout_width="380dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_corners"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/titleRankHistory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:elevation="8dp"
+                    android:fontFamily="?attr/mainFont"
+                    android:text="# Rank History"
+                    android:textColor="?attr/textColorPrimary"
+                    android:textFontWeight="550"
+                    android:textSize="30sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+                
+<!--                TODO: Add graph-->
+                <View
+                    android:id="@+id/graph"
+                    android:layout_width="320dp"
+                    android:layout_height="296dp"
+                    android:background="@drawable/rounded_corners_dark"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/titleRankHistory"
+                    app:layout_constraintBottom_toTopOf="@id/legend"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+                
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/legend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+                    
+                    <ImageView
+                        android:id="@+id/blIconLegend"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:src="@drawable/logo_beatleader"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+                    
+                    <View
+                        android:id="@+id/blLine"
+                        android:layout_width="54dp"
+                        android:layout_height="2dp"
+                        android:background="@color/black"
+                        app:layout_constraintTop_toTopOf="@id/blIconLegend"
+                        app:layout_constraintStart_toEndOf="@id/blIconLegend"
+                        app:layout_constraintBottom_toBottomOf="@id/blIconLegend"/>
+                    
+                    <ImageView
+                        android:id="@+id/ssIconLegend"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:src="@drawable/logo_scoresaber"
+                        app:layout_constraintStart_toEndOf="@id/blLine"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+                    
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
 </FrameLayout>

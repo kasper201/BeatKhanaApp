@@ -2,6 +2,7 @@ package com.kasper201.beatkhanatest;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -101,7 +102,7 @@ public class HomeFragment extends Fragment {
                     ssRankChange = 999999;
                 }
 
-                playerInfoList.add(new PlayerInfo(name, String.format("%.2fpp", sspp), "#" + ssRank, "#" + blRank, "" + ssRankChange, "" + blRankChange, String.format("%.2fpp", blpp), String.format("%.2f%%", blAcc), country, avatar));
+                playerInfoList.add(new PlayerInfo(id, name, String.format("%.2fpp", sspp), "#" + ssRank, "#" + blRank, "" + ssRankChange, "" + blRankChange, String.format("%.2fpp", blpp), String.format("%.2f%%", blAcc), country, avatar));
                 adapter.notifyDataSetChanged(); // Update the list view with the new data
                 loadedPlayers++;
 
@@ -127,12 +128,27 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
         ListView listView = view.findViewById(R.id.listView);
 
         playerInfoList = new ArrayList<>();
         adapter = new PlayerInfoAdapter(getContext(), playerInfoList);
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener((parent, view1, position, id) -> {
+            PlayerInfo selectedPlayer = playerInfoList.get(position);
+            Bundle bundle = new Bundle();
+            bundle.putString("playerName", selectedPlayer.getID());
+            // Add other player details to the bundle as needed
+
+            PlayerDetailFragment playerDetailFragment = new PlayerDetailFragment();
+            playerDetailFragment.setArguments(bundle);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.frameLayout, playerDetailFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
 
         fetchPlayerData();
 

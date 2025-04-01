@@ -7,15 +7,18 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link PlayerDetailFragment#newInstance} factory method to
+ * Use the {@link PlayerDetailFragment#} factory method to
  * create an instance of this fragment.
  */
 public class PlayerDetailFragment extends Fragment {
 
-        @Override
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -23,7 +26,11 @@ public class PlayerDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_player_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_player_detail, container, false);
+
+
+        return view;
+
+
     }
 }
