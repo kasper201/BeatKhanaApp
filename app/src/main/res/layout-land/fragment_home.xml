@@ -14,12 +14,12 @@
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:shapeAppearanceOverlay="@style/RoundedCorners12"
-        tools:listitem="@layout/fragment_player_info"
-        android:padding="16dp"
         android:divider="@android:color/transparent"
         android:dividerHeight="16dp"
-        android:scrollbarStyle="outsideOverlay">
+        android:padding="16dp"
+        android:scrollbarStyle="outsideOverlay"
+        app:shapeAppearanceOverlay="@style/RoundedCorners12"
+        tools:listitem="@layout/fragment_player_info">
 
     </ListView>
 

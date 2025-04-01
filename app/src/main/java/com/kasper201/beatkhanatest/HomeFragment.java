@@ -29,6 +29,8 @@ public class HomeFragment extends Fragment {
 
     private List<PlayerInfo> playerInfoList;
     private PlayerInfoAdapter adapter;
+    private int totalPlayers = 0;
+    private int loadedPlayers = 0;
 
     /**
      * Round a double to a specified number of decimal places
@@ -56,6 +58,8 @@ public class HomeFragment extends Fragment {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         JSONArray dataArray = jsonObject.getJSONArray("data");
+                        totalPlayers = dataArray.length();
+                        loadedPlayers = 0;
                         for (int i = 0; i < dataArray.length(); i++) {
                             JSONObject player = dataArray.getJSONObject(i);
                             String id = player.getString("id");
@@ -71,9 +75,6 @@ public class HomeFragment extends Fragment {
                             // Fetch ScoreSaber data for each player
                             fetchScoreSaberData(id, name, blpp, blRank, blRankChange, blAcc, country, avatar);
                         }
-                        // Sort playerInfoList by ScoreSaber rank
-                        playerInfoList.sort(Comparator.comparingInt(PlayerInfo::getBlRankAsInt));
-                        adapter.notifyDataSetChanged();
                     } catch (JSONException e) {
                         Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         e.printStackTrace();
@@ -101,7 +102,15 @@ public class HomeFragment extends Fragment {
                 }
 
                 playerInfoList.add(new PlayerInfo(name, String.format("%.2fpp", sspp), "#" + ssRank, "#" + blRank, "" + ssRankChange, "" + blRankChange, String.format("%.2fpp", blpp), String.format("%.2f%%", blAcc), country, avatar));
-                adapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged(); // Update the list view with the new data
+                loadedPlayers++;
+
+                // Sort the list when all players have been loaded
+                if (loadedPlayers == totalPlayers) {
+                    playerInfoList.sort(Comparator.comparingInt(PlayerInfo::getBlRankAsInt));
+                    adapter.notifyDataSetChanged();
+                }
+
             } catch (JSONException e) {
                 Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 e.printStackTrace();
@@ -126,58 +135,6 @@ public class HomeFragment extends Fragment {
         listView.setAdapter(adapter);
 
         fetchPlayerData();
-
-//        String url = "https://api.beatleader.com/players?leaderboardContext=general&page=1&count=50&sortBy=pp&mapsType=ranked&ppType=general&order=desc&pp_range=,&score_range=,"; // base url
-//        String ssBaseUrl = "https://scoresaber.com/api/player/";
-//
-//        // Handle the response from the server
-//        mySingleton.getInstance(this.getContext()).addToRequestQueue(url,
-//                response -> {
-//                    // Parse the response and update playerInfoList
-//                    // For example, assuming the response is a JSON array of player info
-//                    try {
-//                        JSONObject jsonObject = new JSONObject(response);
-//                        JSONArray dataArray = jsonObject.getJSONArray("data");
-//                        for (int i = 0; i < dataArray.length(); i++) {
-//                            JSONObject player = dataArray.getJSONObject(i);
-//                            String id = player.getString("id");
-//                            String name = player.getString("name");
-//                            double blpp = round(player.getDouble("pp"), 2);
-//                            int blRank = player.getInt("rank");
-//                            int blRankChange = blRank - player.getInt("lastWeekRank");
-//                            JSONObject scoreStats = player.getJSONObject("scoreStats");
-//                            double blAcc = round(scoreStats.getDouble("averageRankedAccuracy") * 100, 2);
-//                            String country = player.getString("country");
-//                            String avatar = player.getString("avatar");
-//
-//                            //////////////////////////////////////////
-//                            // fetch scoresaber data
-//                            mySingleton.getInstance(this.getContext()).addToRequestQueue(ssBaseUrl + id + "/basic", ssResponse -> {
-//                                        try {
-//                                            JSONObject ssData = new JSONObject(ssResponse);
-//                                            double sspp = round(ssData.getDouble("pp"), 2);
-//                                            int ssRank = ssData.getInt("rank");
-////                                            String[] ssHistories = ssData.getString("histories").split(",");
-////                                            if(ssHistories.length < 7) {
-////                                                return;
-////                                            }
-////                                            int ssRankChange = ssRank - Integer.parseInt(ssHistories[ssHistories.length - 7]);
-//                                            int ssRankChange = 0;
-//                                            playerInfoList.add(new PlayerInfo(name, String.format("%.2fpp", sspp), "#" + ssRank, "#" + blRank, "+" + ssRankChange, "+" + blRankChange, String.format("%.2fpp", blpp), String.format("%.2f%%", blAcc), country, avatar));
-//                                        } catch (JSONException e) {
-//                                            Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-//                                            e.printStackTrace();
-//                                        }
-//                                    },
-//                                    Throwable::printStackTrace);
-//                        }
-//                        adapter.notifyDataSetChanged();
-//                    } catch (JSONException e) {
-//                        Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-//                        e.printStackTrace();
-//                    }
-//                },
-//                Throwable::printStackTrace);
 
         return view;
 

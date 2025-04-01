@@ -25,6 +25,7 @@ public class PlayerInfo {
         this.blRankChange = blRankChange;
         this.accuracy = accuracy;
         this.country = country;
+        this.avatar = avatar;
     }
 
     public String getUsername() {
@@ -65,6 +66,8 @@ public class PlayerInfo {
     }
 
     public String getSsRankChange() {
+        if(Integer.parseInt(ssRankChange) > 0)
+            return "+" + ssRankChange;
         return ssRankChange;
     }
 
@@ -73,6 +76,8 @@ public class PlayerInfo {
     }
 
     public String getBlRankChange() {
+        if(Integer.parseInt(blRankChange) > 0)
+            return "+" + blRankChange;
         return blRankChange;
     }
 
@@ -94,5 +99,21 @@ public class PlayerInfo {
 
     public void setAccuracy(String accuracy) {
         this.accuracy = accuracy;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
