@@ -22,12 +22,13 @@ import com.kasper201.beatkhanatest.databinding.ActivityMainBinding;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements OverviewFragment.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // TODO: Implement different behavior for rotating the device.
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -59,10 +60,5 @@ public class MainActivity extends AppCompatActivity implements OverviewFragment.
                 return false;
             }
         });
-    }
-
-    @Override
-    public void onItemSelected(String itemName) {
-        Toast.makeText(this, "Selected: " + itemName, Toast.LENGTH_SHORT).show();
     }
 }

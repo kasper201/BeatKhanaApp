@@ -1,7 +1,10 @@
 // PlayerInfo.java
 package com.kasper201.beatkhanatest;
 
-public class PlayerInfo {
+import java.io.Serializable;
+import java.util.List;
+
+public class PlayerInfo implements Serializable {
     private String id;
     private String username;
     private String ssPP;
@@ -14,6 +17,8 @@ public class PlayerInfo {
     private String accuracy; // fetched from BeatLeader
     private String country; // fetched from BeatLeader
     private String avatar; // fetched from BeatLeader
+    private List<String> blRankHistory;
+    private List<String> ssRankHistory;
 
     // Constructor
     public PlayerInfo(String id, String username ,String ssPP, String ssRank, String blRank, String ssRankChange, String blRankChange, String blPP, String accuracy, String country, String avatar) {

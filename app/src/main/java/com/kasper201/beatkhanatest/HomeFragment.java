@@ -50,7 +50,11 @@ public class HomeFragment extends Fragment {
         return (double) tmp / factor;
     }
 
-    // Method to fetch player data
+    /**
+     * Fetch player data from the BeatLeader API
+     * TODO: Add error handling
+     * TODO: Make url an adaptable parameter
+     */
     private void fetchPlayerData() {
         String url = "https://api.beatleader.com/players?leaderboardContext=general&page=1&count=50&sortBy=pp&mapsType=ranked&ppType=general&order=desc&pp_range=,&score_range=,"; // base url
 
@@ -143,7 +147,7 @@ public class HomeFragment extends Fragment {
         listView.setOnItemClickListener((parent, view1, position, id) -> {
             PlayerInfo selectedPlayer = playerInfoList.get(position);
             Bundle bundle = new Bundle();
-            bundle.putString("playerName", selectedPlayer.getID());
+            bundle.putSerializable("playerInfo", selectedPlayer);
             // Add other player details to the bundle as needed
 
             PlayerDetailFragment playerDetailFragment = new PlayerDetailFragment();
