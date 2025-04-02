@@ -67,6 +67,14 @@ public class PlayerInfo {
         return Integer.parseInt(blRank.replace("#", ""));
     }
 
+    public int getRankChangeInt(String leaderboard) {
+        if(leaderboard.equals("ss")) {
+            return Integer.parseInt(ssRankChange);
+        } else {
+            return Integer.parseInt(blRankChange);
+        }
+    }
+
     public String getSsRankChange() {
         if(Integer.parseInt(ssRankChange) > 0)
             return "+" + ssRankChange;

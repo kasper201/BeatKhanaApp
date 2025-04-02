@@ -67,7 +67,7 @@ public class HomeFragment extends Fragment {
                             String name = player.getString("name");
                             double blpp = round(player.getDouble("pp"), 2);
                             int blRank = player.getInt("rank");
-                            int blRankChange = blRank - player.getInt("lastWeekRank");
+                            int blRankChange = player.getInt("lastWeekRank") - blRank;
                             JSONObject scoreStats = player.getJSONObject("scoreStats");
                             double blAcc = round(scoreStats.getDouble("averageRankedAccuracy") * 100, 2);
                             String country = player.getString("country");
@@ -88,17 +88,23 @@ public class HomeFragment extends Fragment {
     private void fetchScoreSaberData(String id, String name, double blpp, int blRank, int blRankChange, double blAcc, String country, String avatar) {
         String ssBaseUrl = "https://scoresaber.com/api/player/";
 
+        // TODO: 3/31/25 Add error handling AND correct player IDs
         mySingleton.getInstance(this.getContext()).addToRequestQueue(ssBaseUrl + id + "/basic", ssResponse -> {
             try {
                 JSONObject ssData = new JSONObject(ssResponse);
+                if(ssData.has("error")) {
+                    Toast.makeText(getContext(), "Error: " + ssData.getString("error"), Toast.LENGTH_LONG).show();
+                    return;
+                }
                 double sspp = round(ssData.getDouble("pp"), 2);
                 int ssRank = ssData.getInt("rank");
                 String[] ssHistories = ssData.getString("histories").split(",");
                 int ssRankChange = 0;
-                if (ssHistories.length >= 7) {
-                    ssRankChange = ssRank - Integer.parseInt(ssHistories[ssHistories.length - 7]);
-                }
-                else {
+                if (ssHistories.length >= 7 && !ssHistories[ssHistories.length - 7].isEmpty()) {
+                    ssRankChange = Integer.parseInt(ssHistories[ssHistories.length - 7]) - ssRank;
+                } else if (ssHistories.length > 1) {
+                    ssRankChange = Integer.parseInt(ssHistories[1]) - ssRank;
+                } else {
                     ssRankChange = 999999;
                 }
 
@@ -153,7 +159,5 @@ public class HomeFragment extends Fragment {
         fetchPlayerData();
 
         return view;
-
-
     }
 }

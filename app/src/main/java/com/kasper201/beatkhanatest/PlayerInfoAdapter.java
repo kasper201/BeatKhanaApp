@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -79,6 +80,8 @@ public class PlayerInfoAdapter extends BaseAdapter {
         } else if (Objects.equals(playerInfo.getSsRankChange(), "0")) {
             ssRankChange.setTextColor(context.getResources().getColor(R.color.white, null));
         } else {
+            if (playerInfo.getRankChangeInt("ss") == 999999)
+                ssRankChange.setText("+∞");
             ssRankChange.setTextColor(context.getResources().getColor(R.color.GainGreen, null));
         }
         if (playerInfo.getBlRankChange().contains("-")) {
@@ -86,6 +89,8 @@ public class PlayerInfoAdapter extends BaseAdapter {
         } else if (Objects.equals(playerInfo.getBlRankChange(), "0")) {
             blRankChange.setTextColor(context.getResources().getColor(R.color.white, null));
         } else {
+            if (playerInfo.getRankChangeInt("bl") == 999999)
+                blRankChange.setText("+∞");
             blRankChange.setTextColor(context.getResources().getColor(R.color.GainGreen, null));
         }
 
