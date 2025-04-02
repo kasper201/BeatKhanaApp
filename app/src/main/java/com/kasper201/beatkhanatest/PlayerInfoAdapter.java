@@ -1,12 +1,18 @@
 package com.kasper201.beatkhanatest;
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.util.List;
+import java.util.Objects;
+
+import com.bumptech.glide.Glide;
 
 public class PlayerInfoAdapter extends BaseAdapter {
 
@@ -41,6 +47,7 @@ public class PlayerInfoAdapter extends BaseAdapter {
 
         PlayerInfo playerInfo = playerInfoList.get(position);
 
+        ImageView countryFlag = convertView.findViewById(R.id.countryFlag);
         TextView username = convertView.findViewById(R.id.username);
         TextView ssPP = convertView.findViewById(R.id.ssPP);
         TextView ssRank = convertView.findViewById(R.id.ssRank);
@@ -49,6 +56,7 @@ public class PlayerInfoAdapter extends BaseAdapter {
         TextView blRank = convertView.findViewById(R.id.blRank);
         TextView blRankChange = convertView.findViewById(R.id.blRankChange);
         TextView accuracy = convertView.findViewById(R.id.accuracy);
+        ImageView playerProfile = convertView.findViewById(R.id.playerprofile);
 
         username.setText(playerInfo.getUsername());
         ssPP.setText(playerInfo.getSsPP());
@@ -58,6 +66,33 @@ public class PlayerInfoAdapter extends BaseAdapter {
         blRankChange.setText(playerInfo.getBlRankChange());
         blPP.setText(playerInfo.getBlPP());
         accuracy.setText(playerInfo.getAccuracy());
+
+        // load country flag from url
+        Glide.with(context).load("https://flagcdn.com/w320/" + playerInfo.getCountry().toLowerCase() + ".png").into(countryFlag);
+
+        // load playerProfile picture from url
+        Glide.with(context).load(playerInfo.getAvatar()).into(playerProfile);
+
+        // TODO: Set correct themes for rank change
+        // Set correct color for rank change
+        if (playerInfo.getSsRankChange().contains("-")) {
+            ssRankChange.setTextColor(context.getResources().getColor(R.color.LossRed, null));
+        } else if (Objects.equals(playerInfo.getSsRankChange(), "0")) {
+            ssRankChange.setTextColor(context.getResources().getColor(R.color.white, null));
+        } else {
+            if (playerInfo.getRankChangeInt("ss") == 999999)
+                ssRankChange.setText("+∞");
+            ssRankChange.setTextColor(context.getResources().getColor(R.color.GainGreen, null));
+        }
+        if (playerInfo.getBlRankChange().contains("-")) {
+            blRankChange.setTextColor(context.getResources().getColor(R.color.LossRed, null));
+        } else if (Objects.equals(playerInfo.getBlRankChange(), "0")) {
+            blRankChange.setTextColor(context.getResources().getColor(R.color.white, null));
+        } else {
+            if (playerInfo.getRankChangeInt("bl") == 999999)
+                blRankChange.setText("+∞");
+            blRankChange.setTextColor(context.getResources().getColor(R.color.GainGreen, null));
+        }
 
         return convertView;
     }

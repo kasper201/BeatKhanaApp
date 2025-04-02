@@ -1,7 +1,11 @@
 // PlayerInfo.java
 package com.kasper201.beatkhanatest;
 
-public class PlayerInfo {
+import java.io.Serializable;
+import java.util.List;
+
+public class PlayerInfo implements Serializable {
+    private String id;
     private String username;
     private String ssPP;
 
@@ -11,9 +15,14 @@ public class PlayerInfo {
     private String blPP;
     private String blRank;
     private String accuracy; // fetched from BeatLeader
+    private String country; // fetched from BeatLeader
+    private String avatar; // fetched from BeatLeader
+    private List<String> blRankHistory;
+    private List<String> ssRankHistory;
 
     // Constructor
-    public PlayerInfo(String username ,String ssPP, String ssRank, String blRank, String ssRankChange, String blRankChange, String blPP, String accuracy) {
+    public PlayerInfo(String id, String username ,String ssPP, String ssRank, String blRank, String ssRankChange, String blRankChange, String blPP, String accuracy, String country, String avatar) {
+        this.id = id;
         this.username = username;
         this.ssPP = ssPP;
         this.ssRank = ssRank;
@@ -22,6 +31,8 @@ public class PlayerInfo {
         this.ssRankChange = ssRankChange;
         this.blRankChange = blRankChange;
         this.accuracy = accuracy;
+        this.country = country;
+        this.avatar = avatar;
     }
 
     public String getUsername() {
@@ -57,7 +68,21 @@ public class PlayerInfo {
         this.blRank = blRank;
     }
 
+    public int getBlRankAsInt() {
+        return Integer.parseInt(blRank.replace("#", ""));
+    }
+
+    public int getRankChangeInt(String leaderboard) {
+        if(leaderboard.equals("ss")) {
+            return Integer.parseInt(ssRankChange);
+        } else {
+            return Integer.parseInt(blRankChange);
+        }
+    }
+
     public String getSsRankChange() {
+        if(Integer.parseInt(ssRankChange) > 0)
+            return "+" + ssRankChange;
         return ssRankChange;
     }
 
@@ -66,6 +91,8 @@ public class PlayerInfo {
     }
 
     public String getBlRankChange() {
+        if(Integer.parseInt(blRankChange) > 0)
+            return "+" + blRankChange;
         return blRankChange;
     }
 
@@ -87,5 +114,29 @@ public class PlayerInfo {
 
     public void setAccuracy(String accuracy) {
         this.accuracy = accuracy;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getID() {
+        return id;
+    }
+
+    public void setID(String id) {
+        this.id = id;
     }
 }

@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="OverlayBG">#2B4A48</color>
+    <color name="OverlayBGDark">#223A39</color>
     <color name="GainGreen">#4AFF72</color>
     <color name="LossRed">#FF4A4A</color>
 </resources>
