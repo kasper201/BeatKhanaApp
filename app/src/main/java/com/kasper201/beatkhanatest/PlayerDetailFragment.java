@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import android.view.Gravity;
@@ -13,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.LinearLayout;
@@ -25,8 +28,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +38,19 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class PlayerDetailFragment extends Fragment {
+
+    private String playerId;
+    private boolean playerSaved = false;
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(playerSaved)
+        {
+            Saved saved = new Saved(getContext());
+            saved.addPlayerId(playerId);
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +62,6 @@ public class PlayerDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_player_detail, container, false);
 
-
         return view;
     }
 
@@ -53,6 +69,7 @@ public class PlayerDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Handle arguments
         Bundle arguments = getArguments();
         if (arguments == null) { // TODO: handle null arguments
             return;
@@ -64,27 +81,69 @@ public class PlayerDetailFragment extends Fragment {
         }
 
         setPlayerInfo(playerInfo);
+        playerId = playerInfo.getID();
 
-        String playerId = playerInfo.getID();
+        // TODO: Make back button functional
+        // TODO: Correct colour and font type of toolbar
+        // Setup toolbar
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            activity.setSupportActionBar(toolbar);
+            Objects.requireNonNull(activity.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+            activity.getSupportActionBar().setTitle("Player Details");
+        }
 
-        // setup badges
-        getBadges(view, playerId, playerId);
+        // Set up the toolbar menu and make sure menu is loaded before the menu
+        toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                // handle saving
+                Saved saved = new Saved(getContext());
+                playerSaved = saved.idExists(playerId);
+                if (playerSaved) {
+                    MenuItem saveItem = toolbar.getMenu().findItem(R.id.action_save);
+                    if (saveItem != null) {
+                        saveItem.setIcon(R.drawable.save_icon_filled);
+                    }
+                }
+
+                // setup badges
+                getBadges(view, playerId, playerId);
+            }
+        });
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_player_detail, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+//            // Handle back button click
+            return true;
+        } else if (id == R.id.action_save) {
+            // TODO: Adapt for (un)save functionality
+            Saved saved = new Saved(getContext());
+            if(!playerSaved) {
+                playerSaved = true;
+                saved.addPlayerId(playerId);
+                item.setIcon(R.drawable.save_icon_filled);
+            } else {
+                playerSaved = false;
+                saved.removePlayerId(playerId);
+                item.setIcon(R.drawable.save_icon);
+            }
+            Toast.makeText(getContext(), playerSaved ? "Saved" : "Removed", Toast.LENGTH_SHORT).show();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -120,6 +179,13 @@ public class PlayerDetailFragment extends Fragment {
 
     }
 
+    /**
+     * Fetches the badges from the API and adds them to the layout
+     *
+     * @param view The view to add the badges to
+     * @param blId The BeatLeader ID of the player
+     * @param ssId The ScoreSaber ID of the player
+     */
     private void getBadges(View view, String blId, String ssId)
     {
         String ssBaseUrl = "https://scoresaber.com/api/player/";

@@ -2,6 +2,7 @@ package com.kasper201.beatkhanatest;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 // TODO: Move general player overview methods to OverviewFragment class
 
@@ -139,6 +141,14 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ListView listView = view.findViewById(R.id.listView);
+
+        // Setup toolbar
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            activity.setSupportActionBar(toolbar);
+            activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         playerInfoList = new ArrayList<>();
         adapter = new PlayerInfoAdapter(getContext(), playerInfoList);

@@ -19,7 +19,7 @@
         android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-
+<!--TODO: Convert to linear layout-->
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
