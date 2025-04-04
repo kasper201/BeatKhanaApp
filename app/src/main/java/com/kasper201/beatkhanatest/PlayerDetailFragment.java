@@ -30,7 +30,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,7 +47,7 @@ public class PlayerDetailFragment extends Fragment {
         if(playerSaved)
         {
             Saved saved = new Saved(getContext());
-            saved.addPlayerId(playerId);
+            saved.addSavedPlayerId(playerId);
         }
     }
 
@@ -68,7 +67,9 @@ public class PlayerDetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Saved saved = new Saved(getContext());
 
+        // TODO: Possibly retrieve the information from the API in this fragment instead of passing it from the previous fragment to avoid null playerInfo
         // Handle arguments
         Bundle arguments = getArguments();
         if (arguments == null) { // TODO: handle null arguments
@@ -101,8 +102,8 @@ public class PlayerDetailFragment extends Fragment {
                 toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
                 // handle saving
-                Saved saved = new Saved(getContext());
-                playerSaved = saved.idExists(playerId);
+
+                playerSaved = saved.idSaved(playerId);
                 if (playerSaved) {
                     MenuItem saveItem = toolbar.getMenu().findItem(R.id.action_save);
                     if (saveItem != null) {
@@ -112,6 +113,9 @@ public class PlayerDetailFragment extends Fragment {
 
                 // setup badges
                 getBadges(view, playerId, playerId);
+
+                // add to recent players
+                saved.addRecentPlayerId(playerId);
             }
         });
     }
@@ -133,11 +137,11 @@ public class PlayerDetailFragment extends Fragment {
             Saved saved = new Saved(getContext());
             if(!playerSaved) {
                 playerSaved = true;
-                saved.addPlayerId(playerId);
+                saved.addSavedPlayerId(playerId);
                 item.setIcon(R.drawable.save_icon_filled);
             } else {
                 playerSaved = false;
-                saved.removePlayerId(playerId);
+                saved.removeSavedPlayerId(playerId);
                 item.setIcon(R.drawable.save_icon);
             }
             Toast.makeText(getContext(), playerSaved ? "Saved" : "Removed", Toast.LENGTH_SHORT).show();
@@ -152,7 +156,6 @@ public class PlayerDetailFragment extends Fragment {
      */
     private void setPlayerInfo(@NonNull PlayerInfo playerInfo)
     {
-        // TODO: Possibly retreive the information from the API in this fragment instead of passing it from the previous fragment to avoid null playerInfo
         // Set player information in the views
         TextView username = getView().findViewById(R.id.username);
         TextView ssRank = getView().findViewById(R.id.ssRank);

@@ -90,7 +90,17 @@ public class HomeFragment extends Fragment {
                 Throwable::printStackTrace);
     }
 
-    // Method to fetch ScoreSaber data
+    /**
+     * Fetch ScoreSaber data for a player
+     * @param id Player ID
+     * @param name Player name
+     * @param blpp BeatLeader PP
+     * @param blRank BeatLeader rank
+     * @param blRankChange BeatLeader rank change
+     * @param blAcc BeatLeader accuracy
+     * @param country Player country
+     * @param avatar Player avatar URL
+     */
     private void fetchScoreSaberData(String id, String name, double blpp, int blRank, int blRankChange, double blAcc, String country, String avatar) {
         String ssBaseUrl = "https://scoresaber.com/api/player/";
 
@@ -98,9 +108,8 @@ public class HomeFragment extends Fragment {
         mySingleton.getInstance(this.getContext()).addToRequestQueue(ssBaseUrl + id + "/basic", ssResponse -> {
             try {
                 JSONObject ssData = new JSONObject(ssResponse);
-                if(ssData.has("error")) {
+                if(ssData.has("error")) { // Handle error
                     Toast.makeText(getContext(), "Error: " + ssData.getString("error"), Toast.LENGTH_LONG).show();
-                    return;
                 }
                 double sspp = round(ssData.getDouble("pp"), 2);
                 int ssRank = ssData.getInt("rank");
@@ -115,14 +124,12 @@ public class HomeFragment extends Fragment {
                 }
 
                 playerInfoList.add(new PlayerInfo(id, name, String.format("%.2fpp", sspp), "#" + ssRank, "#" + blRank, "" + ssRankChange, "" + blRankChange, String.format("%.2fpp", blpp), String.format("%.2f%%", blAcc), country, avatar));
-                adapter.notifyDataSetChanged(); // Update the list view with the new data
                 loadedPlayers++;
 
                 // Sort the list when all players have been loaded
-                if (loadedPlayers == totalPlayers) {
+                if (loadedPlayers == totalPlayers)
                     playerInfoList.sort(Comparator.comparingInt(PlayerInfo::getBlRankAsInt));
-                    adapter.notifyDataSetChanged();
-                }
+                adapter.notifyDataSetChanged(); // Update the list view with the new data
 
             } catch (JSONException e) {
                 Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();

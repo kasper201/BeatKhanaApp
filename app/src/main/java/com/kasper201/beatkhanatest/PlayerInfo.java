@@ -136,6 +136,10 @@ public class PlayerInfo implements Serializable {
         return id;
     }
 
+    public long getIDAsLong() {
+        return Long.parseLong(id);
+    }
+
     public void setID(String id) {
         this.id = id;
     }

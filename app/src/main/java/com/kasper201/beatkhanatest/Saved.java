@@ -9,7 +9,8 @@ import java.util.List;
 
 public class Saved {
 
-    private static final String FILE_NAME = "saved_player_ids.txt";
+    private static final String SAVED_PLAYERS = "saved_player_ids.txt";
+    private static final String RECENT_PLAYERS = "recent_player_ids.txt";
     private Context context;
 
     public Saved(Context context) {
@@ -22,7 +23,7 @@ public class Saved {
      * @param playerIds A list of player IDs to save.
      */
     public void savePlayerIds(List<String> playerIds) {
-        try (FileOutputStream fos = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE)) {
+        try (FileOutputStream fos = context.openFileOutput(SAVED_PLAYERS, Context.MODE_PRIVATE)) {
             for (String id : playerIds) {
                 fos.write((id + ",").getBytes());
             }
@@ -36,9 +37,9 @@ public class Saved {
      *
      * @return A list of player IDs.
      */
-    public List<String> loadPlayerIds() {
+    public List<String> loadSavedPlayerIds() {
         List<String> playerIds = new ArrayList<>();
-        try (FileInputStream fis = context.openFileInput(FILE_NAME)) {
+        try (FileInputStream fis = context.openFileInput(SAVED_PLAYERS)) {
             int size;
             StringBuilder stringBuilder = new StringBuilder();
             while ((size = fis.read()) != -1) {
@@ -61,8 +62,8 @@ public class Saved {
      *
      * @param playerId The player ID to add.
      */
-    public void addPlayerId(String playerId) {
-        List<String> playerIds = loadPlayerIds();
+    public void addSavedPlayerId(String playerId) {
+        List<String> playerIds = loadSavedPlayerIds();
         if (!playerIds.contains(playerId)) {
             playerIds.add(playerId);
             savePlayerIds(playerIds);
@@ -74,8 +75,8 @@ public class Saved {
      *
      * @param playerId The player ID to remove.
      */
-    public void removePlayerId(String playerId) {
-        List<String> playerIds = loadPlayerIds();
+    public void removeSavedPlayerId(String playerId) {
+        List<String> playerIds = loadSavedPlayerIds();
         if (playerIds.contains(playerId)) {
             playerIds.remove(playerId);
             savePlayerIds(playerIds);
@@ -88,8 +89,47 @@ public class Saved {
      * @param playerId The player ID to check.
      * @return True if the player ID exists, false otherwise.
      */
-    public boolean idExists(String playerId) {
-        List<String> playerIds = loadPlayerIds();
+    public boolean idSaved(String playerId) {
+        List<String> playerIds = loadSavedPlayerIds();
         return playerIds.contains(playerId);
+    }
+
+    public void saveRecentPlayerIds(List<String> playerIds) {
+        try (FileOutputStream fos = context.openFileOutput(RECENT_PLAYERS, Context.MODE_PRIVATE)) {
+            for (String id : playerIds) {
+                fos.write((id + ",").getBytes());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addRecentPlayerId(String playerId) {
+        List<String> playerIds = loadRecentPlayerIds();
+        if (!playerIds.contains(playerId)) {
+            playerIds.add(playerId);
+            saveRecentPlayerIds(playerIds);
+        }
+    }
+
+    public List<String> loadRecentPlayerIds()
+    {
+        List<String> playerIds = new ArrayList<>();
+        try (FileInputStream fis = context.openFileInput(RECENT_PLAYERS)) {
+            int size;
+            StringBuilder stringBuilder = new StringBuilder();
+            while ((size = fis.read()) != -1) {
+                stringBuilder.append((char) size);
+            }
+            String[] ids = stringBuilder.toString().split(",");
+            for (String id : ids) {
+                if (!id.isEmpty()) {
+                    playerIds.add(id);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return playerIds;
     }
 }

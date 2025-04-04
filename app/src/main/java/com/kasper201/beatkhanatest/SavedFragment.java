@@ -2,8 +2,6 @@ package com.kasper201.beatkhanatest;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -13,6 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,7 +27,8 @@ import java.util.Objects;
 public class SavedFragment extends Fragment {
     private List<PlayerInfo> playerInfoList;
     private PlayerInfoAdapter adapter;
-
+    private int totalPlayers;
+    private int loadedPlayers;
 
     public SavedFragment() {
     }
@@ -32,6 +36,7 @@ public class SavedFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -49,6 +54,103 @@ public class SavedFragment extends Fragment {
             Objects.requireNonNull(activity.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         }
 
+        playerInfoList = new ArrayList<>();
+        adapter = new PlayerInfoAdapter(getContext(), playerInfoList);
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener((parent, view1, position, id) -> {
+            PlayerInfo selectedPlayer = playerInfoList.get(position);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("playerInfo", selectedPlayer);
+            // Add other player details to the bundle as needed
+
+            PlayerDetailFragment playerDetailFragment = new PlayerDetailFragment();
+            playerDetailFragment.setArguments(bundle);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.frameLayout, playerDetailFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        Saved saved = new Saved(getContext());
+        // List of saved player IDs
+        List<String> savedPlayers = saved.loadSavedPlayerIds();
+        totalPlayers = savedPlayers.size();
+        loadedPlayers = 0;
+
+        for (String playerId : savedPlayers) {
+            // Fetch player data using the playerId
+            fetchPlayerData(playerId, playerId); // Assuming blId and ssId are the same for testing
+        }
+
         return view;
+    }
+
+    /**
+     * Fetch player data from BeatLeader and ScoreSaber APIs.
+     * @param blId BeatLeader ID
+     * @param ssId ScoreSaber ID
+     */
+    private void fetchPlayerData(String blId, String ssId) {
+        String blUrl = "https://api.beatleader.xyz/player/" + blId + "?stats=true&keepOriginalId=false&leaderboardContext=510";
+        String ssUrl = "https://scoresaber.com/api/player/" + ssId + "/basic";
+
+
+
+        mySingleton.getInstance(this.getContext()).addToRequestQueue(blUrl, blResponse -> {
+            try {
+                JSONObject blData = new JSONObject(blResponse);
+                // TODO: Handle error case
+
+                String name = blData.getString("name");
+                double blpp = blData.getDouble("pp");
+                int blRank = blData.getInt("rank");
+                int blRankChange = blData.getInt("lastWeekRank") - blRank;
+                JSONObject scoreStats = blData.getJSONObject("scoreStats");
+                double acc = scoreStats.getDouble("averageRankedAccuracy");
+                String country = blData.getString("country");
+                String avatar = blData.getString("avatar");
+
+                fetchPlayerSSData(blId, ssUrl, name, blpp, blRank, blRankChange, acc, country, avatar);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, Throwable::printStackTrace);
+
+    }
+
+    private void fetchPlayerSSData(String id, String ssUrl, String name, double blpp, int blRank, int blRankChange, double blAcc, String country, String avatar)
+    {
+        mySingleton.getInstance(this.getContext()).addToRequestQueue(ssUrl, ssResponse -> {
+            try {
+                JSONObject ssData = new JSONObject(ssResponse);
+                // TODO: Handle error case
+
+                double sspp = ssData.getDouble("pp");
+                int ssRank = ssData.getInt("rank");
+
+                String[] ssHistories = ssData.getString("histories").split(",");
+                int ssRankChange = 0;
+                if (ssHistories.length >= 7 && !ssHistories[ssHistories.length - 7].isEmpty()) {
+                    ssRankChange = Integer.parseInt(ssHistories[ssHistories.length - 7]) - ssRank;
+                } else if (ssHistories.length > 1) {
+                    ssRankChange = Integer.parseInt(ssHistories[1]) - ssRank;
+                } else {
+                    ssRankChange = 999999;
+                }
+
+                playerInfoList.add(new PlayerInfo(id, name, String.format("%.2fpp", sspp), "#" + ssRank, "#" + blRank, "" + ssRankChange, "" + blRankChange, String.format("%.2fpp", blpp), String.format("%.2f%%", blAcc), country, avatar));
+                loadedPlayers++;
+
+                // Sort the list when all players have been loaded
+                if (loadedPlayers == totalPlayers)
+                    playerInfoList.sort(Comparator.comparing(PlayerInfo::getUsername));
+                adapter.notifyDataSetChanged(); // Update the list view with the new data
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, Throwable::printStackTrace);
     }
 }

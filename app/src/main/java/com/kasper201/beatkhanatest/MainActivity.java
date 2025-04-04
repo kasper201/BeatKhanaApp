@@ -22,6 +22,9 @@ import com.kasper201.beatkhanatest.databinding.ActivityMainBinding;
 
 import java.util.Objects;
 
+// TODO: Implement different behavior for rotating the device.
+// TODO: Implement a back stack for overview fragments
+
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new SearchFragment()).commit();
                 return true;
             } else if (itemId == R.id.action_saved) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new UserFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new SavedFragment()).commit();
                 return true;
             } else if (itemId == R.id.action_user_profile) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new UserFragment()).commit();
