@@ -38,30 +38,28 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new HomeFragment()).commit(); // Load the HomeFragment by default
 
         // Use if-else statements as a workaround for the switch statement not functioning properly
-        if(binding.bottomNavigationView == null) {
-            throw new IllegalStateException("bottomNavigationView must not be null");
+        if(binding.bottomNavigationView != null) {
+            binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+                int itemId = item.getItemId();
+                if (itemId == R.id.action_home) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new HomeFragment()).commit();
+                    return true;
+                } else if (itemId == R.id.action_recent) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new RecentFragment()).commit();
+                    return true;
+                } else if (itemId == R.id.action_search) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new SearchFragment()).commit();
+                    return true;
+                } else if (itemId == R.id.action_saved) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new SavedFragment()).commit();
+                    return true;
+                } else if (itemId == R.id.action_user_profile) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new UserFragment()).commit();
+                    return true;
+                } else {
+                    return false;
+                }
+            });
         }
-
-        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.action_home) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new HomeFragment()).commit();
-                return true;
-            } else if (itemId == R.id.action_recent) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new RecentFragment()).commit();
-                return true;
-            } else if (itemId == R.id.action_search) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new SearchFragment()).commit();
-                return true;
-            } else if (itemId == R.id.action_saved) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new SavedFragment()).commit();
-                return true;
-            } else if (itemId == R.id.action_user_profile) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, new UserFragment()).commit();
-                return true;
-            } else {
-                return false;
-            }
-        });
     }
 }

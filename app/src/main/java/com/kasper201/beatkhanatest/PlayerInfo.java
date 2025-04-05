@@ -35,6 +35,22 @@ public class PlayerInfo implements Serializable {
         this.avatar = avatar;
     }
 
+    public PlayerInfo(String id, String username ,String ssPP, String ssRank, String blRank, String ssRankChange, String blRankChange, String blPP, String accuracy, String country, String avatar, List<String> blRankHistory, List<String> ssRankHistory) {
+        this.id = id;
+        this.username = username;
+        this.ssPP = ssPP;
+        this.ssRank = ssRank;
+        this.blPP = blPP;
+        this.blRank = blRank;
+        this.ssRankChange = ssRankChange;
+        this.blRankChange = blRankChange;
+        this.accuracy = accuracy;
+        this.country = country;
+        this.avatar = avatar;
+        this.blRankHistory = blRankHistory;
+        this.ssRankHistory = ssRankHistory;
+    }
+
     public String getUsername() {
         return username;
     }

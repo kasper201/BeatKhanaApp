@@ -1,10 +1,14 @@
 package com.kasper201.beatkhanatest;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 // TODO: Move general player overview methods to OverviewFragment class
+// TODO: Handle dependencies with latch.countdown
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,6 +37,7 @@ public class HomeFragment extends Fragment {
 
     private List<PlayerInfo> playerInfoList;
     private PlayerInfoAdapter adapter;
+    private PlayerInfoAdapterLand adapterLand;
     private int totalPlayers = 0;
     private int loadedPlayers = 0;
 
@@ -130,6 +136,7 @@ public class HomeFragment extends Fragment {
                 if (loadedPlayers == totalPlayers)
                     playerInfoList.sort(Comparator.comparingInt(PlayerInfo::getBlRankAsInt));
                 adapter.notifyDataSetChanged(); // Update the list view with the new data
+                adapterLand.notifyDataSetChanged();
 
             } catch (JSONException e) {
                 Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -152,29 +159,53 @@ public class HomeFragment extends Fragment {
         // Setup toolbar
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        if (activity != null) {
+        if (activity != null && toolbar != null) {
             activity.setSupportActionBar(toolbar);
             activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
         playerInfoList = new ArrayList<>();
         adapter = new PlayerInfoAdapter(getContext(), playerInfoList);
-        listView.setAdapter(adapter);
+        adapterLand = new PlayerInfoAdapterLand(getContext(), playerInfoList);
 
-        listView.setOnItemClickListener((parent, view1, position, id) -> {
-            PlayerInfo selectedPlayer = playerInfoList.get(position);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("playerInfo", selectedPlayer);
-            // Add other player details to the bundle as needed
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (listView != null) {
+                listView.setAdapter(adapter);
 
-            PlayerDetailFragment playerDetailFragment = new PlayerDetailFragment();
-            playerDetailFragment.setArguments(bundle);
+                listView.setOnItemClickListener((parent, view1, position, id) -> {
+                    PlayerInfo selectedPlayer = playerInfoList.get(position);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("playerInfo", selectedPlayer);
 
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.frameLayout, playerDetailFragment)
-                    .addToBackStack(null)
-                    .commit();
-        });
+                    PlayerDetailFragment playerDetailFragment = new PlayerDetailFragment();
+                    playerDetailFragment.setArguments(bundle);
+
+                    getParentFragmentManager().beginTransaction()
+                            .replace(R.id.frameLayout, playerDetailFragment)
+                            .addToBackStack(null)
+                            .commit();
+                });
+            }
+        } else {
+            RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+            if (recyclerView != null) {
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.HORIZONTAL, false);
+                recyclerView.setLayoutManager(gridLayoutManager);
+                recyclerView.setAdapter(adapterLand);
+                adapterLand.setOnItemClickListener(playerInfo -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("playerInfo", playerInfo);
+
+                    PlayerDetailFragment playerDetailFragment = new PlayerDetailFragment();
+                    playerDetailFragment.setArguments(bundle);
+
+                    getParentFragmentManager().beginTransaction()
+                            .replace(R.id.frameLayout, playerDetailFragment)
+                            .addToBackStack(null)
+                            .commit();
+                });
+            }
+        }
 
 
         fetchPlayerData();

@@ -9,18 +9,15 @@
     android:backgroundTint="?attr/colorPrimary"
     android:backgroundTintMode="add">
 
-<!--    TODO: Fix corner rounding -->
-    <ListView
-        android:id="@+id/listView"
+    <!-- TODO: Fix corner rounding -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="16dp"
         android:padding="16dp"
         android:scrollbarStyle="outsideOverlay"
         app:shapeAppearanceOverlay="@style/RoundedCorners12"
-        tools:listitem="@layout/fragment_player_info">
-
-    </ListView>
+        tools:listitem="@layout/fragment_player_info"
+        android:orientation="horizontal" />
 
 </FrameLayout>

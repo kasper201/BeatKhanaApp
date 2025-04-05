@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+// TODO: Handle dependencies with latch.countdown
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link RecentFragment#newInstance} factory method to
@@ -70,6 +72,7 @@ public class RecentFragment extends Fragment {
 
         Saved saved = new Saved(getContext());
         // List of recently viewed player IDs
+        // TODO: Fix double loading/saving of recent players
         recentPlayers = saved.loadRecentPlayerIds();
 
         for (int i = 0; i < recentPlayers.size(); i++) {
@@ -143,12 +146,13 @@ public class RecentFragment extends Fragment {
                 playerInfoList.add(new PlayerInfo(id, name, String.format("%.2fpp", sspp), "#" + ssRank, "#" + blRank, "" + ssRankChange, "" + blRankChange, String.format("%.2fpp", blpp), String.format("%.2f%%", blAcc), country, avatar));
                 loadedPlayers++;
 
-                // When all players are loaded, sort and update the list
+                // When all players are loaded, sort and update the list view
+                // Puts the last added player at the top of the list
                 if (loadedPlayers == recentPlayers.size()) {
                     playerInfoList.sort((p1, p2) -> {
                         int index1 = recentPlayers.indexOf(p1.getID());
                         int index2 = recentPlayers.indexOf(p2.getID());
-                        return Integer.compare(index1, index2);
+                        return Integer.compare(index2, index1);
                     });
                 }
 

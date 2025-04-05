@@ -106,10 +106,10 @@ public class Saved {
 
     public void addRecentPlayerId(String playerId) {
         List<String> playerIds = loadRecentPlayerIds();
-        if (!playerIds.contains(playerId)) {
-            playerIds.add(playerId);
-            saveRecentPlayerIds(playerIds);
-        }
+        if (playerIds.contains(playerId))
+            playerIds.remove(playerId);
+        playerIds.add(playerId);
+        saveRecentPlayerIds(playerIds);
     }
 
     public List<String> loadRecentPlayerIds()

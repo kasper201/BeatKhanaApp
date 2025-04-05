@@ -1,5 +1,6 @@
 package com.kasper201.beatkhanatest;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,14 +23,23 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -111,8 +121,8 @@ public class PlayerDetailFragment extends Fragment {
                     }
                 }
 
-                // setup badges
-                getBadges(view, playerId, playerId);
+                // setup data
+                getData(view, playerId, playerId);
 
                 // add to recent players
                 saved.addRecentPlayerId(playerId);
@@ -183,23 +193,39 @@ public class PlayerDetailFragment extends Fragment {
     }
 
     /**
-     * Fetches the badges from the API and adds them to the layout
+     * Fetches the data from the API and adds them to the layout
      *
-     * @param view The view to add the badges to
+     * @param view The view to add the data to
      * @param blId The BeatLeader ID of the player
      * @param ssId The ScoreSaber ID of the player
      */
-    private void getBadges(View view, String blId, String ssId)
+    private void getData(View view, String blId, String ssId)
     {
         String ssBaseUrl = "https://scoresaber.com/api/player/";
         String blBaseUrl = "https://api.beatleader.xyz/player/";
         List<String> ssBadgeUrls = new ArrayList<>();
         List<String> ssBadgeDescriptions = new ArrayList<>();
+        List<String> ssRankHistory = new ArrayList<>();
         List<String> blBadgeUrls = new ArrayList<>();
         List<String> blBadgeDescriptions = new ArrayList<>();
-        // TODO: Change array to be actual badge URLs
+        List<String> blRankHistory = new ArrayList<>();
+        CountDownLatch latch = new CountDownLatch(2); // There are 2 (relevant) asynchronous tasks
         // TODO: Add badge descriptions
 
+        // Wait for both tasks to complete
+        new Thread(() -> {
+            try {
+                latch.await(); // Wait until the latch count reaches zero
+                requireActivity().runOnUiThread(() -> {
+                    LineChart chart = view.findViewById(R.id.lineChart);
+                    setupLineChart(chart, blRankHistory, ssRankHistory);
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        // Get ScoreSaber data
         mySingleton.getInstance(this.getContext()).addToRequestQueue(ssBaseUrl + ssId + "/full", ssResponse -> {
             try {
                 JSONObject ssData = new JSONObject(ssResponse);
@@ -217,6 +243,10 @@ public class PlayerDetailFragment extends Fragment {
                     ssBadgeUrls.add(badgeUrl);
                 }
 
+                // Get rank history
+                String[] ssHistoriesArray = ssData.getString("histories").split(",");
+                Collections.addAll(ssRankHistory, ssHistoriesArray);
+
                 // Add badges to the layout
                 LinearLayout ssBadges = view.findViewById(R.id.ssBadgeImages);
                 addBadgesToLinearLayout(ssBadges, ssBadgeUrls, "N/A");
@@ -224,10 +254,13 @@ public class PlayerDetailFragment extends Fragment {
             catch (JSONException e) {
                 Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 e.printStackTrace();
+            } finally {
+                latch.countDown(); // Decrement the latch count
             }
                 },
                 Throwable::printStackTrace);
 
+        // get BeatLeader Badges
         mySingleton.getInstance(this.getContext()).addToRequestQueue(blBaseUrl + blId + "?stats=true&keepOriginalId=false&leaderboardContext=510", blResponse -> {
                     try {
                         JSONObject blData = new JSONObject(blResponse);
@@ -255,6 +288,96 @@ public class PlayerDetailFragment extends Fragment {
                     }
                 },
                 Throwable::printStackTrace);
+
+        // get BeatLeader rank history
+        mySingleton.getInstance(this.getContext()).addToRequestQueue(blBaseUrl + blId + "/history/compact?count=30&leaderboardContext=general", blHistoryResponse -> {
+            try {
+                JSONArray blHistoryArray = new JSONArray(blHistoryResponse);
+                for (int i = 0; i < blHistoryArray.length(); i++) {
+                    JSONObject historyObject = blHistoryArray.getJSONObject(i);
+                    String rank = historyObject.getString("rank");
+                    blRankHistory.add(rank);
+                }
+            } catch (JSONException e) {
+                Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            } finally {
+                latch.countDown(); // Decrement the latch count
+            }
+        }, Throwable::printStackTrace);
+    }
+
+    // TODO: Add custom value formatter for Y-axis to use whole numbers
+    // TODO: Correct Icon colours, labels and icons
+    /**
+     * Sets up the line chart with the given data
+     *
+     * @param lineChart The LineChart to set up
+     * @param blRankHistory The BeatLeader rank history data
+     * @param ssRankHistory The ScoreSaber rank history data
+     */
+    private void setupLineChart(LineChart lineChart, List<String> blRankHistory, List<String> ssRankHistory) {
+        List<Entry> ssEntries = new ArrayList<>();
+        List<Entry> blEntries = new ArrayList<>();
+
+        int blOffset = 0;
+        int ssOffset = 0;
+
+        if(blRankHistory.size() < ssRankHistory.size())
+        {
+            blOffset = ssRankHistory.size() - blRankHistory.size();
+        }
+        else
+        {
+            ssOffset = blRankHistory.size() - ssRankHistory.size();
+        }
+
+        for (int i = 0; i < (blRankHistory.size() - ssOffset); i++) {
+            blEntries.add(new Entry(i, Float.parseFloat(blRankHistory.get(i + ssOffset))));
+        }
+
+        for (int i = 0; i < (ssRankHistory.size() - blOffset); i++) {
+            ssEntries.add(new Entry(i, Float.parseFloat(ssRankHistory.get(i + blOffset))));
+        }
+
+        // TODO: Correct colours, lables and icons
+        LineDataSet blDataSet = new LineDataSet(blEntries, "BeatLeader Rank");
+        blDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        blDataSet.setColor(Color.BLUE);
+        blDataSet.setDrawCircles(false);
+        blDataSet.setDrawValues(false);
+        blDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+
+        LineDataSet ssDataSet = new LineDataSet(ssEntries, "ScoreSaber Rank");
+        ssDataSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
+        ssDataSet.setColor(Color.RED);
+        ssDataSet.setDrawCircles(false);
+        ssDataSet.setDrawValues(false);
+        ssDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+
+        LineData lineData = new LineData(blDataSet, ssDataSet);
+        lineChart.setData(lineData);
+
+        // Set custom value formatter for Y-axis to use whole numbers
+        YAxis leftAxis = lineChart.getAxisLeft();
+        leftAxis.setInverted(true);
+        leftAxis.setDrawLabels(true);
+        leftAxis.setDrawGridLines(false);
+
+        YAxis rightAxis = lineChart.getAxisRight();
+        rightAxis.setInverted(true);
+        rightAxis.setDrawLabels(true);
+        rightAxis.setDrawGridLines(true);
+
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
+        xAxis.setGranularityEnabled(false);
+//        xAxis.setDrawLabels(false);
+
+        lineChart.setVisibleXRangeMaximum(Math.min(blRankHistory.size(), ssRankHistory.size()));
+        lineChart.moveViewToX(0);
+
+        lineChart.invalidate(); // refresh
     }
 
     /**
